@@ -1,12 +1,21 @@
 # Docker registry repo/image used as our base
-FROM blackfinsecurity/tha-kali-msf
+FROM local/kali-msf-micro
 
 # Who is responsible for this madness?
 MAINTAINER ctarwater@blackfinsecurity.com
 
-USER root
-# Strip out unused Metasploit modules
-RUN rm -rf /usr/share/metasploit-framework/modules/*
+# Let our non-root user start the services needed to run the Metasploit Framework Console
+RUN echo "thastudent ALL = NOPASSWD: /usr/sbin/service postgresql *"  >> /etc/sudoers
+RUN echo "thastudent ALL = NOPASSWD: /usr/sbin/service metasploit *" >> /etc/sudoers
+RUN echo "thastudent ALL = NOPASSWD: /usr/bin/msfconsole *" >> /etc/sudoers
+
+# Add our script to start the metasploit console
+RUN rm /init.sh
+ADD ./init.sh /init.sh
+
+# Create a non-root user
+RUN useradd -m thastudent && \
+chown -R thastudent:thastudent /home/thastudent
 
 # Issue remaining commands as new user
 USER thastudent
