@@ -1,5 +1,5 @@
 # Docker registry repo/image used as our base
-FROM local/kali-msf-micro
+FROM ctarwater/kali-msf-micro
 
 # Who is responsible for this madness?
 MAINTAINER ctarwater@blackfinsecurity.com
